@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using VehicleDataAccess.Helpers;
 using VehicleDataAccess.Implementations;
 
 namespace VehicleDataAccess
@@ -19,11 +22,40 @@ namespace VehicleDataAccess
             _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync()
+        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync(VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging)
         {
-            return await _vehicleRepository.GetVehicleMakeList();
-        }
+            var vehicles = from vehicle in await _vehicleRepository.GetVehicleMakeList(paging)
+                           select vehicle;
 
+            paging.TotalCount = vehicles.Count();
+
+            //filter/find
+            if (filters.ShouldFilterMakes())
+            {
+                vehicles = vehicles.Where(m => m.Name.Contains(filters.SearchString) || m.Abrv.Contains(filters.SearchString));
+            }
+            
+            // sort
+            switch (sorting.SortBy)
+            {
+                case "name_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Name);
+                    break;
+
+                case "Abrv":
+                    vehicles = vehicles.OrderBy(v => v.Abrv);
+                    break;
+
+                case "abrv_desc":
+                    vehicles = vehicles.OrderByDescending(v => v.Abrv);
+                    break;
+
+                default: // sort by name
+                    vehicles = vehicles.OrderBy(v => v.Name);
+                    break;
+            }
+            return vehicles.Skip(paging.ItemsToSkip).Take(paging.ResultsPerPage).ToList();
+        }
         protected bool ValidateVehicleMake(VehicleMake vehicleMake)
         {
             if (vehicleMake.Name == null)

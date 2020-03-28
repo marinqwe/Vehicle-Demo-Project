@@ -1,9 +1,16 @@
-﻿using System.Collections.Generic;
-
-namespace VehicleDataAccess
+﻿namespace VehicleDataAccess.Migrations
 {
-    public class VehicleInitializer : System.Data.Entity.DropCreateDatabaseIfModelChanges<VehicleContext>
+    using System.Collections.Generic;
+    using System.Data.Entity.Migrations;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<VehicleContext>
     {
+        public Configuration()
+        {
+            AutomaticMigrationsEnabled = false;
+            ContextKey = "VehicleDataAccess.VehicleContext";
+        }
+
         protected override void Seed(VehicleContext context)
         {
             var vehicles = new List<VehicleMake>

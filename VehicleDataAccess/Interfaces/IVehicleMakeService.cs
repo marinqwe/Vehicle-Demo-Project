@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleDataAccess.Helpers;
 
 namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleMakeService
     {
-        Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync();
+        Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync(VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging);
 
         Task<VehicleMake> FindVehicleMakeAsync(int? id);
 

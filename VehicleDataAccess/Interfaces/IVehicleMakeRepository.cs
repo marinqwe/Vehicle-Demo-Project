@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleDataAccess.Helpers;
 
 namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleMakeRepository
     {
-        Task<IEnumerable<VehicleMake>> GetVehicleMakeList();
+        Task<IEnumerable<VehicleMake>> GetVehicleMakeList(VehicleMakePaging paging);
 
         Task<VehicleMake> FindVehicleMake(int? id);
 

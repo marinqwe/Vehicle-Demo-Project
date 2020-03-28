@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using VehicleDataAccess.Implementations;
+using VehicleDataAccess.Helpers;
 
 namespace VehicleDataAccess
 {
@@ -10,7 +12,7 @@ namespace VehicleDataAccess
         private readonly VehicleContext _entities = new VehicleContext();
 
         // Vehicle Make
-        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList()
+        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList(VehicleMakePaging paging)
         {
             return await _entities.VehicleMakes.ToListAsync();
         }

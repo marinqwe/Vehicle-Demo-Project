@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using PagedList;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using VehicleDataAccess;
 using VehicleDataAccess.Implementations;
 using VehicleStuffDemo.ViewModels;
+using VehicleDataAccess.Helpers;
 
 namespace VehicleStuffDemo.Controllers
 {
@@ -31,12 +30,17 @@ namespace VehicleStuffDemo.Controllers
         // GET: VehicleMake
         public async Task<ActionResult> Index(string sortBy, string currentFilter, string searchString, int? page)
         {
-            SortVehicleMake(ViewBag, sortBy, currentFilter, searchString, page);
-            List<VehicleMake> vehicles = await GetVehiclesAsync(sortBy, searchString);
-            List<VehicleMakeViewModel> vehiclesListDest = iMapper.Map<List<VehicleMake>, List<VehicleMakeViewModel>>(vehicles);
-            var paginatedVehicleList = ConvertToPaginatedResults(vehiclesListDest, page);
+            VehicleMakeFilters filters = new VehicleMakeFilters(searchString, currentFilter);
+            VehicleMakeSorting sorting = new VehicleMakeSorting(sortBy);
+            VehicleMakePaging paging = new VehicleMakePaging(page);
 
-            return View(paginatedVehicleList);
+            var vehicles = await _vehicleService.GetVehicleMakeListAsync(filters, sorting, paging);
+            List<VehicleMakeViewModel> vehiclesListDest = iMapper.Map<List<VehicleMakeViewModel>>(vehicles);
+            var paginatedVehiclesList = new StaticPagedList<VehicleMakeViewModel>(vehiclesListDest, paging.Page ?? 1, paging.ResultsPerPage, paging.TotalCount);
+
+            UpdateView(ViewBag, filters, sorting, paging);
+
+            return View(paginatedVehiclesList);
         }
 
         // GET: VehicleMake/Details/5
@@ -51,7 +55,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            var vehicleMakeViewModel = iMapper.Map<VehicleMake, VehicleMakeViewModel>(vehicleMake);
+            var vehicleMakeViewModel = iMapper.Map<VehicleMakeViewModel>(vehicleMake);
             return View(vehicleMakeViewModel);
         }
 
@@ -67,7 +71,7 @@ namespace VehicleStuffDemo.Controllers
         public async Task<ActionResult> Create([Bind(Include = "Name,Abrv")] VehicleMake vehicleMake)
         {
             if (!await _vehicleService.CreateVehicle(vehicleMake))
-                return View(iMapper.Map<VehicleMake, VehicleMakeViewModel>(vehicleMake));
+                return View(iMapper.Map<VehicleMakeViewModel>(vehicleMake));
 
             return RedirectToAction("Index");
         }
@@ -84,7 +88,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            var vehicleMakeViewModel = iMapper.Map<VehicleMake, VehicleMakeViewModel>(vehicleMake);
+            var vehicleMakeViewModel = iMapper.Map<VehicleMakeViewModel>(vehicleMake);
             return View(vehicleMakeViewModel);
         }
 
@@ -112,7 +116,7 @@ namespace VehicleStuffDemo.Controllers
                 }
             }
 
-            return View(iMapper.Map<VehicleMake, VehicleMakeViewModel>(vehicleToUpdate));
+            return View(iMapper.Map<VehicleMakeViewModel>(vehicleToUpdate));
         }
 
         // GET: VehicleMake/Delete/5
@@ -132,7 +136,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            var vehicleMakeViewModel = iMapper.Map<VehicleMake, VehicleMakeViewModel>(vehicleMake);
+            var vehicleMakeViewModel = iMapper.Map<VehicleMakeViewModel>(vehicleMake);
             return View(vehicleMakeViewModel);
         }
 
@@ -155,63 +159,23 @@ namespace VehicleStuffDemo.Controllers
         }
 
         // Index methods
-        private void SortVehicleMake(dynamic ViewBag, string sortBy, string currentFilter, string searchString, int? page)
+        private void UpdateView(dynamic ViewBag, VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging)
         {
-            // current sort by - keep sorting between pages
-            ViewBag.CurrentSort = sortBy;
-            // sort by
-            ViewBag.SortByName = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
-            ViewBag.SortByAbrv = sortBy == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewBag.CurrentSort = sorting.SortBy;
+            ViewBag.SortByName = sorting.SortByName;
+            ViewBag.SortByAbrv = sorting.SortByAbrv;
 
             // paging - if searchString is updated, return to page 1
-            if (searchString != null)
+            if (filters.SearchString != null)
             {
-                page = 1;
+                paging.Page = 1;
             }
             else // else keep the filter
             {
-                searchString = currentFilter;
+                filters.SearchString = filters.CurrentFilter;
             }
             // current filter - keeps filter between pages
-            ViewBag.CurrentFilter = searchString;
-        }
-
-        private async Task<List<VehicleMake>> GetVehiclesAsync(string sortBy, string searchString)
-        {
-            var vehicles = await _vehicleService.GetVehicleMakeListAsync();
-            // filter/find
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                vehicles = vehicles.Where(m => m.Name.Contains(searchString) || m.Abrv.Contains(searchString));
-            }
-
-            // sort
-            switch (sortBy)
-            {
-                case "name_desc":
-                    vehicles = vehicles.OrderByDescending(v => v.Name);
-                    break;
-
-                case "Abrv":
-                    vehicles = vehicles.OrderBy(v => v.Abrv);
-                    break;
-
-                case "abrv_desc":
-                    vehicles = vehicles.OrderByDescending(v => v.Abrv);
-                    break;
-
-                default: // sort by name
-                    vehicles = vehicles.OrderBy(v => v.Name);
-                    break;
-            }
-            return vehicles.ToList();
-        }
-
-        private IPagedList<VehicleMakeViewModel> ConvertToPaginatedResults(List<VehicleMakeViewModel> vehicleMakeViewModelList, int? page)
-        {
-            int pageSize = 3;
-            int pageNumber = (page ?? 1);
-            return vehicleMakeViewModelList.ToPagedList(pageNumber, pageSize);
+            ViewBag.CurrentFilter = filters.SearchString;
         }
     }
 }

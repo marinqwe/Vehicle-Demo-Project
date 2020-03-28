@@ -9,59 +9,6 @@ namespace VehicleDataAccess
     {
         private readonly VehicleContext _entities = new VehicleContext();
 
-        // Vehicle Make
-        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList()
-        {
-            return await _entities.VehicleMakes.ToListAsync();
-        }
-
-        public async Task<VehicleMake> FindVehicleMake(int? id)
-        {
-            return await _entities.VehicleMakes.FindAsync(id);
-        }
-
-        public async Task<bool> CreateVehicle(VehicleMake vehicleMake)
-        {
-            try
-            {
-                _entities.VehicleMakes.Add(vehicleMake);
-                await _entities.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> DeleteVehicle(VehicleMake vehicleMake)
-        {
-            try
-            {
-                _entities.VehicleMakes.Remove(vehicleMake);
-                await _entities.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> EditVehicle()
-        {
-            try
-            {
-                await _entities.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        // Vehicle Model
         public async Task<IEnumerable<VehicleModel>> GetVehicleModelList()
         {
             return await _entities.VehicleModels.ToListAsync();

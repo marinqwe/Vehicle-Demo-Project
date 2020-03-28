@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using VehicleDataAccess;
+using VehicleDataAccess.Helpers;
 using VehicleDataAccess.Implementations;
 using VehicleStuffDemo.ViewModels;
 
@@ -31,10 +32,15 @@ namespace VehicleStuffDemo.Controllers
         // GET: VehicleModel
         public async Task<ActionResult> Index(string sortBy, string currentFilter, string searchString, int? page)
         {
-            SortVehicleModel(ViewBag, sortBy, currentFilter, searchString, page);
-            List<VehicleModel> models = await GetVehicleModelsAsync(sortBy, searchString);
-            List<VehicleModelViewModel> modelsListDest = iMapper.Map<List<VehicleModel>, List<VehicleModelViewModel>>(models);
-            var paginatedModelsList = ConvertToPaginatedResults(modelsListDest, page);
+            VehicleModelFilters filters = new VehicleModelFilters(searchString, currentFilter);
+            VehicleModelSorting sorting = new VehicleModelSorting(sortBy);
+            VehicleModelPaging paging = new VehicleModelPaging(page);
+
+            var models = await _vehicleService.GetVehicleModelList(filters, sorting, paging);
+            List<VehicleModelViewModel> modelsListDest = iMapper.Map<List<VehicleModelViewModel>>(models);
+            var paginatedModelsList = new StaticPagedList<VehicleModelViewModel>(modelsListDest, paging.Page ?? 1, paging.ResultsPerPage, paging.TotalCount);
+
+            UpdateView(ViewBag, filters, sorting, paging);
 
             return View(paginatedModelsList);
         }
@@ -51,7 +57,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            var vehicleModelViewModel = iMapper.Map<VehicleModel, VehicleModelViewModel>(vehicleModel);
+            var vehicleModelViewModel = iMapper.Map<VehicleModelViewModel>(vehicleModel);
             return View(vehicleModelViewModel);
         }
 
@@ -67,7 +73,7 @@ namespace VehicleStuffDemo.Controllers
         public async Task<ActionResult> Create([Bind(Include = "Id,MakeId,Name,Abrv")] VehicleModel vehicleModel)
         {
             if (!await _vehicleService.CreateVehicleModel(vehicleModel))
-                return View(iMapper.Map<VehicleModel, VehicleModelViewModel>(vehicleModel));
+                return View(iMapper.Map<VehicleModelViewModel>(vehicleModel));
 
             return RedirectToAction("Index");
         }
@@ -84,7 +90,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            return View(iMapper.Map<VehicleModel, VehicleModelViewModel>(vehicleModel));
+            return View(iMapper.Map<VehicleModelViewModel>(vehicleModel));
         }
 
         // POST: VehicleModel/Edit/5
@@ -110,7 +116,7 @@ namespace VehicleStuffDemo.Controllers
                 }
             }
 
-            return View(iMapper.Map<VehicleModel, VehicleModelViewModel>(vehicleModelToUpdate));
+            return View(iMapper.Map<VehicleModelViewModel>(vehicleModelToUpdate));
         }
 
         // GET: VehicleModel/Delete/5
@@ -129,7 +135,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 return HttpNotFound();
             }
-            return View(iMapper.Map<VehicleModel, VehicleModelViewModel>(vehicleModel));
+            return View(iMapper.Map<VehicleModelViewModel>(vehicleModel));
         }
 
         // POST: VehicleModel/Delete/5
@@ -148,76 +154,26 @@ namespace VehicleStuffDemo.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        // Index methods
-        private void SortVehicleModel(dynamic ViewBag, string sortBy, string currentFilter, string searchString, int? page)
+        private void UpdateView(dynamic ViewBag, VehicleModelFilters filters, VehicleModelSorting sorting, VehicleModelPaging paging)
         {
             // current sort by - keep sorting between pages
-            ViewBag.CurrentSort = sortBy;
+            ViewBag.CurrentSort = sorting.SortBy;
             // sort by
-            ViewBag.SortByName = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";
-            ViewBag.SortByAbrv = sortBy == "Abrv" ? "abrv_desc" : "Abrv";
-            ViewBag.SortById = sortBy == "MakeId" ? "makeid_desc" : "MakeId";
+            ViewBag.SortByName = String.IsNullOrEmpty(sorting.SortBy) ? "name_desc" : "";
+            ViewBag.SortByAbrv = sorting.SortBy == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewBag.SortById = sorting.SortBy == "MakeId" ? "makeid_desc" : "MakeId";
 
             // paging - if searchString is updated, return to page 1
-            if (searchString != null)
+            if (filters.SearchString != null)
             {
-                page = 1;
+                paging.Page = 1;
             }
             else // else keep the filter
             {
-                searchString = currentFilter;
+                filters.SearchString = filters.CurrentFilter;
             }
             // current filter - keeps filter between pages
-            ViewBag.CurrentFilter = searchString;
-        }
-
-        private async Task<List<VehicleModel>> GetVehicleModelsAsync(string sortBy, string searchString)
-        {
-            var models = await _vehicleService.GetVehicleModelList();
-            // filter/find
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                models = models.Where(m => m.Name.Contains(searchString)
-                                    || m.Abrv.Contains(searchString)
-                                    || m.MakeId.ToString().Contains(searchString));
-            }
-            // sort
-            switch (sortBy)
-            {
-                case "name_desc":
-                    models = models.OrderByDescending(v => v.Name);
-                    break;
-
-                case "Abrv":
-                    models = models.OrderBy(v => v.Abrv);
-                    break;
-
-                case "abrv_desc":
-                    models = models.OrderByDescending(v => v.Abrv);
-                    break;
-
-                case "MakeId":
-                    models = models.OrderBy(v => v.MakeId);
-                    break;
-
-                case "makeid_desc":
-                    models = models.OrderByDescending(v => v.MakeId);
-                    break;
-
-                default: // sort by name
-                    models = models.OrderBy(v => v.Name);
-                    break;
-            }
-
-            return models.ToList();
-        }
-
-        private IPagedList<VehicleModelViewModel> ConvertToPaginatedResults(List<VehicleModelViewModel> vehicleModelViewModelList, int? page)
-        {
-            int pageSize = 3;
-            int pageNumber = (page ?? 1);
-            return vehicleModelViewModelList.ToPagedList(pageNumber, pageSize);
+            ViewBag.CurrentFilter = filters.SearchString;
         }
     }
 }
