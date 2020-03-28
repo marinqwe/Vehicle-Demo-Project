@@ -24,7 +24,7 @@ namespace VehicleDataAccess
 
         public async Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync(VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging)
         {
-            var vehicles = from vehicle in await _vehicleRepository.GetVehicleMakeList(paging)
+            var vehicles = from vehicle in await _vehicleRepository.GetVehicleMakeList()
                            select vehicle;
 
             paging.TotalCount = vehicles.Count();

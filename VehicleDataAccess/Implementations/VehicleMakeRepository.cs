@@ -12,7 +12,7 @@ namespace VehicleDataAccess
         private readonly VehicleContext _entities = new VehicleContext();
 
         // Vehicle Make
-        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList(VehicleMakePaging paging)
+        public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList()
         {
             return await _entities.VehicleMakes.ToListAsync();
         }
