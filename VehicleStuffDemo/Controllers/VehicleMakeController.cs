@@ -9,6 +9,8 @@ using VehicleDataAccess;
 using VehicleDataAccess.Implementations;
 using VehicleStuffDemo.ViewModels;
 using VehicleDataAccess.Helpers;
+using System.Linq;
+using System;
 
 namespace VehicleStuffDemo.Controllers
 {
@@ -30,9 +32,9 @@ namespace VehicleStuffDemo.Controllers
         // GET: VehicleMake
         public async Task<ActionResult> Index(string sortBy, string currentFilter, string searchString, int? page)
         {
-            VehicleMakeFilters filters = new VehicleMakeFilters(searchString, currentFilter);
-            VehicleMakeSorting sorting = new VehicleMakeSorting(sortBy);
-            VehicleMakePaging paging = new VehicleMakePaging(page);
+            VehicleFilters filters = new VehicleFilters(searchString, currentFilter);
+            VehicleSorting sorting = new VehicleSorting(sortBy);
+            VehiclePaging paging = new VehiclePaging(page);
 
             var vehicles = await _vehicleService.GetVehicleMakeListAsync(filters, sorting, paging);
             List<VehicleMakeViewModel> vehiclesListDest = iMapper.Map<List<VehicleMakeViewModel>>(vehicles);
@@ -159,13 +161,14 @@ namespace VehicleStuffDemo.Controllers
         }
 
         // Index methods
-        private void UpdateView(dynamic ViewBag, VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging)
+        private void UpdateView(dynamic ViewBag, VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging)
         {
             ViewBag.CurrentSort = sorting.SortBy;
             ViewBag.SortByName = sorting.SortByName;
             ViewBag.SortByAbrv = sorting.SortByAbrv;
 
             // paging - if searchString is updated, return to page 1
+          
             if (filters.SearchString != null)
             {
                 paging.Page = 1;
@@ -174,6 +177,7 @@ namespace VehicleStuffDemo.Controllers
             {
                 filters.SearchString = filters.CurrentFilter;
             }
+         
             // current filter - keeps filter between pages
             ViewBag.CurrentFilter = filters.SearchString;
         }

@@ -6,7 +6,7 @@ namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleMakeService
     {
-        Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync(VehicleMakeFilters filters, VehicleMakeSorting sorting, VehicleMakePaging paging);
+        Task<IEnumerable<VehicleMake>> GetVehicleMakeListAsync(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging);
 
         Task<VehicleMake> FindVehicleMakeAsync(int? id);
 

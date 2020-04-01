@@ -2,13 +2,14 @@
 
 namespace VehicleDataAccess.Helpers
 {
-    public class VehicleMakeSorting
+    public class VehicleSorting
     {
         public string SortBy { get; set; }
         public string SortByName { get; set; }
         public string SortByAbrv { get; set; }
+        public string OrderVehiclesBy { get; set; }
 
-        public VehicleMakeSorting(string sortBy)
+        public VehicleSorting(string sortBy)
         {
             SortBy = sortBy;
             SortByName = String.IsNullOrEmpty(sortBy) ? "name_desc" : "";

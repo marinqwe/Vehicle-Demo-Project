@@ -3,9 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
 using VehicleDataAccess;
-using VehicleStuffDemo.App_Start;
 
-namespace VehicleStuffDemo.Infrastructure
+namespace VehicleStuffDemo.App_Start
 {
     public class NinjectDependencyResolver : IDependencyResolver
     {

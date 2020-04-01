@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using VehicleDataAccess.Helpers;
 
 namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleModelRepository
     {
-        Task<IEnumerable<VehicleModel>> GetVehicleModelList();
+        Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging);
 
         Task<VehicleModel> FindVehicleModel(int? id);
 

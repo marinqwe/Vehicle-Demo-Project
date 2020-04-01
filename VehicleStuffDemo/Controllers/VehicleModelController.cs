@@ -32,9 +32,9 @@ namespace VehicleStuffDemo.Controllers
         // GET: VehicleModel
         public async Task<ActionResult> Index(string sortBy, string currentFilter, string searchString, int? page)
         {
-            VehicleModelFilters filters = new VehicleModelFilters(searchString, currentFilter);
-            VehicleModelSorting sorting = new VehicleModelSorting(sortBy);
-            VehicleModelPaging paging = new VehicleModelPaging(page);
+            VehicleFilters filters = new VehicleFilters(searchString, currentFilter);
+            VehicleSorting sorting = new VehicleSorting(sortBy);
+            VehiclePaging paging = new VehiclePaging(page);
 
             var models = await _vehicleService.GetVehicleModelList(filters, sorting, paging);
             List<VehicleModelViewModel> modelsListDest = iMapper.Map<List<VehicleModelViewModel>>(models);
@@ -154,7 +154,7 @@ namespace VehicleStuffDemo.Controllers
             }
             return RedirectToAction("Index");
         }
-        private void UpdateView(dynamic ViewBag, VehicleModelFilters filters, VehicleModelSorting sorting, VehicleModelPaging paging)
+        private void UpdateView(dynamic ViewBag, VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging)
         {
             // current sort by - keep sorting between pages
             ViewBag.CurrentSort = sorting.SortBy;

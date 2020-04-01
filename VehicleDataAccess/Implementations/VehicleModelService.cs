@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using VehicleDataAccess.Helpers;
 using VehicleDataAccess.Implementations;
@@ -21,47 +20,9 @@ namespace VehicleDataAccess
             _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleModelFilters filters, VehicleModelSorting sorting, VehicleModelPaging paging)
+        public async Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging)
         {
-            var models = from model in await _vehicleRepository.GetVehicleModelList()
-                         select model;
-            paging.TotalCount = models.Count();
-
-            if (filters.ShouldFilterModels())
-            {
-                models = models.Where(m => m.Name.Contains(filters.SearchString)
-                                    || m.Abrv.Contains(filters.SearchString)
-                                    || m.MakeId.ToString().Contains(filters.SearchString));
-            }
-            // sort
-            switch (sorting.SortBy)
-            {
-                case "name_desc":
-                    models = models.OrderByDescending(v => v.Name);
-                    break;
-
-                case "Abrv":
-                    models = models.OrderBy(v => v.Abrv);
-                    break;
-
-                case "abrv_desc":
-                    models = models.OrderByDescending(v => v.Abrv);
-                    break;
-
-                case "MakeId":
-                    models = models.OrderBy(v => v.MakeId);
-                    break;
-
-                case "makeid_desc":
-                    models = models.OrderByDescending(v => v.MakeId);
-                    break;
-
-                default: // sort by name
-                    models = models.OrderBy(v => v.Name);
-                    break;
-            }
-
-            return models.Skip(paging.ItemsToSkip).Take(paging.ResultsPerPage).ToList();
+            return await _vehicleRepository.GetVehicleModelList(filters, sorting, paging);
         }
 
         protected bool ValidateVehicleModel(VehicleModel vehicleModel)

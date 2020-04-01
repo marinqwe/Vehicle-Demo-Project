@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using VehicleStuffDemo.Infrastructure;
+using VehicleStuffDemo.App_Start;
 
 namespace VehicleStuffDemo
 {

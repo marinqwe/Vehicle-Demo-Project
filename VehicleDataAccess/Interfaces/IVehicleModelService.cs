@@ -6,7 +6,7 @@ namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleModelService
     {
-        Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleModelFilters filters, VehicleModelSorting sorting, VehicleModelPaging paging);
+        Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging);
 
         Task<bool> CreateVehicleModel(VehicleModel vehicleModel);
 

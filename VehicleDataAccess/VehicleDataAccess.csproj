@@ -75,12 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\VehicleMakeFilters.cs" />
-    <Compile Include="Helpers\VehicleMakePaging.cs" />
-    <Compile Include="Helpers\VehicleMakeSorting.cs" />
-    <Compile Include="Helpers\VehicleModelFilters.cs" />
-    <Compile Include="Helpers\VehicleModelPaging.cs" />
-    <Compile Include="Helpers\VehicleModelSorting.cs" />
+    <Compile Include="Helpers\VehicleFilters.cs" />
+    <Compile Include="Helpers\VehiclePaging.cs" />
+    <Compile Include="Helpers\VehicleSorting.cs" />
     <Compile Include="Implementations\VehicleMakeRepository.cs" />
     <Compile Include="Implementations\VehicleMakeService.cs" />
     <Compile Include="Implementations\VehicleModelRepository.cs" />

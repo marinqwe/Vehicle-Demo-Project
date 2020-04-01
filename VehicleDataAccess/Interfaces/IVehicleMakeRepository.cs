@@ -6,7 +6,7 @@ namespace VehicleDataAccess.Implementations
 {
     public interface IVehicleMakeRepository
     {
-        Task<IEnumerable<VehicleMake>> GetVehicleMakeList();
+        Task<IEnumerable<VehicleMake>> GetVehicleMakeList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging);
 
         Task<VehicleMake> FindVehicleMake(int? id);
 

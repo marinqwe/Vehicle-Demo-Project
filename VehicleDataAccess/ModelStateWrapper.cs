@@ -4,7 +4,6 @@ namespace VehicleDataAccess
 {
     public class ModelStateWrapper : IValidationDictionary
     {
-        //asdf
         private readonly ModelStateDictionary _modelState;
 
         public ModelStateWrapper(ModelStateDictionary modelState)
