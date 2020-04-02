@@ -1,7 +1,8 @@
 ﻿using Ninject.Modules;
+using VehicleDataAccess;
 using VehicleDataAccess.Implementations;
 
-namespace VehicleDataAccess
+namespace VehicleStuffDemo.App_Start
 {
     public class VehicleModule : NinjectModule
     {

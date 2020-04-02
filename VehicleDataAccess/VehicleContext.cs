@@ -1,5 +1,6 @@
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Diagnostics;
 
 namespace VehicleDataAccess
 {
@@ -8,6 +9,8 @@ namespace VehicleDataAccess
         public VehicleContext()
             : base("VehicleContext")
         {
+            // Write queries to debug output window
+            Database.Log = sql => Debug.Write(sql);
         }
 
         public DbSet<VehicleMake> VehicleMakes { get; set; }

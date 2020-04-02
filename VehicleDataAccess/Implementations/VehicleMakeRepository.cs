@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,11 +44,13 @@ namespace VehicleDataAccess
                     vehicles = vehicles.OrderBy(v => v.Name);
                     break;
             }
+
             return await vehicles.Skip(paging.ItemsToSkip).Take(paging.ResultsPerPage).ToListAsync();
         }
 
         public async Task<VehicleMake> FindVehicleMake(int? id)
         {
+            _entities.Database.Log = Console.Write;
             return await _entities.VehicleMakes.FindAsync(id);
         }
 

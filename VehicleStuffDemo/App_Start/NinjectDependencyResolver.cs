@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using VehicleDataAccess;
 
 namespace VehicleStuffDemo.App_Start
 {
