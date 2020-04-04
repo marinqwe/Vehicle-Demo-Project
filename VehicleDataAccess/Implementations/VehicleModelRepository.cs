@@ -13,8 +13,8 @@ namespace VehicleDataAccess
 
         public async Task<IEnumerable<VehicleModel>> GetVehicleModelList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging)
         {
-            var models = from model in _entities.VehicleModels
-                         select model;
+            IQueryable<VehicleModel> models = from model in _entities.VehicleModels
+                                              select model;
 
             if (filters.ShouldApplyFilters())
             {

@@ -1,6 +1,8 @@
-﻿namespace VehicleDataAccess.Helpers
+﻿using VehicleDataAccess.Interfaces;
+
+namespace VehicleDataAccess.Helpers
 {
-    public class VehicleFilters
+    public class VehicleFilters : IVehicleFilters
     {
         public string SearchString { get; set; }
         public string CurrentFilter { get; set; }

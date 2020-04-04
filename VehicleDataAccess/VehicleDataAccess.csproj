@@ -83,6 +83,7 @@
     <Compile Include="Implementations\VehicleModelRepository.cs" />
     <Compile Include="Implementations\VehicleModelService.cs" />
     <Compile Include="Interfaces\IValidationDictionary.cs" />
+    <Compile Include="Interfaces\IVehicleFilters.cs" />
     <Compile Include="Interfaces\IVehicleMakeRepository.cs" />
     <Compile Include="Interfaces\IVehicleMakeService.cs" />
     <Compile Include="Interfaces\IVehicleModelRepository.cs" />
@@ -90,6 +91,10 @@
     <Compile Include="Migrations\202003221139013_InitialCreate.cs" />
     <Compile Include="Migrations\202003221139013_InitialCreate.designer.cs">
       <DependentUpon>202003221139013_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004040950312_UpdateRelationships.cs" />
+    <Compile Include="Migrations\202004040950312_UpdateRelationships.designer.cs">
+      <DependentUpon>202004040950312_UpdateRelationships.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelStateWrapper.cs" />
@@ -105,6 +110,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202003221139013_InitialCreate.resx">
       <DependentUpon>202003221139013_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004040950312_UpdateRelationships.resx">
+      <DependentUpon>202004040950312_UpdateRelationships.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

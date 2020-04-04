@@ -15,8 +15,8 @@ namespace VehicleDataAccess
         // Vehicle Make
         public async Task<IEnumerable<VehicleMake>> GetVehicleMakeList(VehicleFilters filters, VehicleSorting sorting, VehiclePaging paging)
         {
-            var vehicles = from vehicle in _entities.VehicleMakes
-                           select vehicle;
+            IQueryable<VehicleMake> vehicles = from vehicle in _entities.VehicleMakes
+                                               select vehicle;
 
             //filter/find
             if (filters.ShouldApplyFilters())
