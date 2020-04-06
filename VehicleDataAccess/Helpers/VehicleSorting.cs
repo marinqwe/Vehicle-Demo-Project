@@ -1,8 +1,9 @@
 ﻿using System;
+using VehicleDataAccess.Interfaces;
 
 namespace VehicleDataAccess.Helpers
 {
-    public class VehicleSorting
+    public class VehicleSorting : IVehicleSorting
     {
         public string SortBy { get; set; }
         public string SortByName { get; set; }

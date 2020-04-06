@@ -88,6 +88,8 @@
     <Compile Include="Interfaces\IVehicleMakeService.cs" />
     <Compile Include="Interfaces\IVehicleModelRepository.cs" />
     <Compile Include="Interfaces\IVehicleModelService.cs" />
+    <Compile Include="Interfaces\IVehiclePaging.cs" />
+    <Compile Include="Interfaces\IVehicleSorting.cs" />
     <Compile Include="Migrations\202003221139013_InitialCreate.cs" />
     <Compile Include="Migrations\202003221139013_InitialCreate.designer.cs">
       <DependentUpon>202003221139013_InitialCreate.cs</DependentUpon>

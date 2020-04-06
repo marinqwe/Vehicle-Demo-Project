@@ -1,6 +1,8 @@
-﻿namespace VehicleDataAccess.Helpers
+﻿using VehicleDataAccess.Interfaces;
+
+namespace VehicleDataAccess.Helpers
 {
-    public class VehiclePaging
+    public class VehiclePaging : IVehiclePaging
     {
         public int ResultsPerPage = 10;
         public int? Page { get; set; }
