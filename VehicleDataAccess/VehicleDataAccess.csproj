@@ -84,8 +84,10 @@
     <Compile Include="Implementations\VehicleModelService.cs" />
     <Compile Include="Interfaces\IValidationDictionary.cs" />
     <Compile Include="Interfaces\IVehicleFilters.cs" />
+    <Compile Include="Interfaces\IVehicleMake.cs" />
     <Compile Include="Interfaces\IVehicleMakeRepository.cs" />
     <Compile Include="Interfaces\IVehicleMakeService.cs" />
+    <Compile Include="Interfaces\IVehicleModel.cs" />
     <Compile Include="Interfaces\IVehicleModelRepository.cs" />
     <Compile Include="Interfaces\IVehicleModelService.cs" />
     <Compile Include="Interfaces\IVehiclePaging.cs" />
