@@ -1,6 +1,8 @@
-﻿namespace VehicleDataAccess
+﻿using VehicleDataAccess.Interfaces;
+
+namespace VehicleDataAccess
 {
-    public class VehicleModel
+    public class VehicleModel : IVehicleModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

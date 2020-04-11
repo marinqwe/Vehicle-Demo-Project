@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using VehicleDataAccess.Interfaces;
 
 namespace VehicleDataAccess
 {
-    public class VehicleMake
+    public class VehicleMake : IVehicleMake
     {
         [Key]
         public int MakeId { get; set; }
